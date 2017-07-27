@@ -1,0 +1,31 @@
+{
+  "name": "widi/NearestNeighbor",
+  "description": "Nearest neighbor feature set.",
+  "minimum-stability": "stable",
+  "license": "LGPL-3.0",
+  "authors": [
+    {
+      "name": "Dirk Winkhaus",
+      "email": "dirkwinkhaus@googlemail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Widi\\NearestNeighbor\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Widi\\NearestNeighbor\\": [
+        "test/Unit",
+        "test/Integration"
+      ]
+    }
+  }
+}
