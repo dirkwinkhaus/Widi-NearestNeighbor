@@ -16,5 +16,5 @@ interface VectorFactoryInterface
      * @param float[] ...$data
      * @return VectorInterface
      */
-    public function create(float ...$data);
+    public function create(float ...$data): VectorInterface;
 }

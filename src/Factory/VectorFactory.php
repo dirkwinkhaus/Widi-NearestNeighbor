@@ -1,10 +1,10 @@
 <?php
 
-
 namespace Widi\NearestNeighbor\Factory;
 
 use Widi\NearestNeighbor\Vector;
 use Widi\NearestNeighbor\VectorFactoryAwareInterface;
+use Widi\NearestNeighbor\VectorInterface;
 
 /**
  * Class VectorFactory
@@ -19,7 +19,7 @@ class VectorFactory implements VectorFactoryInterface
      * @param float[] ...$data
      * @return Vector
      */
-    public function create(float ...$data)
+    public function create(float ...$data): VectorInterface
     {
         $vector = new Vector(...$data);
 
