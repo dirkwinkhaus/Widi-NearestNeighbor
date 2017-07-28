@@ -1,5 +1,5 @@
 {
-  "name": "widi/NearestNeighbor",
+  "name": "widi/nearestneighbor",
   "description": "Nearest neighbor feature set.",
   "minimum-stability": "stable",
   "license": "LGPL-3.0",
