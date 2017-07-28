@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Widi\NearestNeighbor;
 
 use Widi\NearestNeighbor\Exception\VectorAlreadyInCollectionException;
-use Widi\NearestNeighbor\Exception\VectorNotCompatibleException;
 use Widi\NearestNeighbor\Exception\VectorNotInCollectionException;
 
 /**
@@ -48,10 +47,10 @@ class VectorCollection implements VectorCollectionInterface
 
     /**
      * @param VectorInterface $vector
-     * @return $this
+     * @return VectorCollectionInterface
      * @throws VectorNotInCollectionException
      */
-    public function removeVector(VectorInterface $vector)
+    public function removeVector(VectorInterface $vector): VectorCollectionInterface
     {
         if (!isset($this->vectors[spl_object_hash($vector)])) {
             throw new VectorNotInCollectionException();
@@ -72,57 +71,23 @@ class VectorCollection implements VectorCollectionInterface
 
     /**
      * @param VectorInterface $selectedVector
-     * @return VectorInterface
+     * @return null|VectorInterface
      */
-    public function findClosest(VectorInterface $selectedVector)
+    public function findClosest(VectorInterface $selectedVector): ?VectorInterface
     {
         $minDistance = null;
         $closestVector = null;
 
         foreach ($this->vectors as $vector) {
-            $connectingVectorArray = $this->createConnectingArrayVector($selectedVector, $vector);
-            $distance = $this->getConnectingArrayVectorLength($connectingVectorArray);
+            $distance = $selectedVector->calculateDistanceTo($vector);
 
             if ($minDistance === null || $distance < $minDistance) {
                 $minDistance = $distance;
                 $closestVector = $vector;
             }
         }
+
         return $closestVector;
     }
 
-    /**
-     * @param VectorInterface $vectorA
-     * @param VectorInterface $vectorB
-     * @return array
-     * @throws VectorNotCompatibleException
-     */
-    private function createConnectingArrayVector(VectorInterface $vectorA, VectorInterface $vectorB): array
-    {
-        if (!$vectorA->isCompatible($vectorB)) {
-            throw new VectorNotCompatibleException();
-        }
-
-        $connectingVectorArray = [];
-        for ($i = 0; $i < $vectorA->getDimensionCount(); ++$i) {
-            $connectingVectorArray[] = $vectorA->getData()[$i] - $vectorB->getData()[$i];
-        }
-
-        return $connectingVectorArray;
-    }
-
-    /**
-     * @param array $arrayVector
-     * @return float
-     */
-    private function getConnectingArrayVectorLength(array $arrayVector): float
-    {
-        $distanceVector = 0;
-
-        for ($i = 0; $i < count($arrayVector); ++$i) {
-            $distanceVector += ($arrayVector[$i]) ** 2;
-        }
-
-        return sqrt($distanceVector);
-    }
 }

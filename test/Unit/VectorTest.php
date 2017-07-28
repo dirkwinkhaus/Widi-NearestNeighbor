@@ -2,13 +2,18 @@
 
 namespace Widi\NearestNeighbor;
 
+use PHPUnit_Framework_TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\MethodProphecy;
+use Widi\NearestNeighbor\Factory\VectorFactoryInterface;
+
 /**
  * Class VectorTest
  * @package Widi\NearestNeighbor
  *
  * @author Dirk Winkhaus <dirkwinkhaus@googlemail.com>
  */
-class VectorTest extends \PHPUnit_Framework_TestCase
+class VectorTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -60,11 +65,59 @@ class VectorTest extends \PHPUnit_Framework_TestCase
     public function getVectorCompatibles()
     {
         return [
-          [[], [], true],
-          [[1], [], false],
-          [[1], [1], true],
-          [[1], [1, 2], false],
-          [[1, 2], [1, 2], true],
+            [[], [], true],
+            [[1], [], false],
+            [[1], [1], true],
+            [[1], [1, 2], false],
+            [[1, 2], [1, 2], true],
         ];
+    }
+
+    /**
+     * @test
+     * @dataProvider getVectorDistanceData
+     *
+     * @param array $vectorAData
+     * @param array $vectorBData
+     * @param float $expectedDistance
+     */
+    public function itShouldCalculateTheDistance(array $vectorAData, array $vectorBData, float $expectedDistance)
+    {
+        $vectorA = new Vector(...$vectorAData);
+        $vectorB = new Vector(...$vectorBData);
+        $calculatedDistance = round($vectorA->calculateDistanceTo($vectorB), 2);
+
+        $this->assertEquals($calculatedDistance, $expectedDistance);
+    }
+
+    /**
+     * @return array
+     */
+    public function getVectorDistanceData()
+    {
+        return [
+            [[7, 4, 3], [17, 6, 2], 10.25],
+            [[31, 10, 90], [-2, -4, -19], 114.74],
+            [[-7, -4], [17, 6.5], 26.20]
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldUseTheFactory()
+    {
+        $factoryMock = $this->prophesize(VectorFactoryInterface::class);
+        /** @var MethodProphecy $method */
+        $method = $factoryMock->create(Argument::any(), Argument::any())->willReturn(new Vector(5, 5));
+        $method->shouldBeCalledTimes(1);
+
+        $vectorA = new Vector(1,1);
+        $vectorA->setFactory($factoryMock->reveal());
+        $vectorB = new Vector(2,2);
+
+        $distance = $vectorA->calculateDistanceTo($vectorB);
+
+        $this->assertEquals(7.0710678118655, $distance);
     }
 }

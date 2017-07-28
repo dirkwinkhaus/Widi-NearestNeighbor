@@ -2,6 +2,7 @@
 
 namespace Widi\NearestNeighbor;
 
+use Widi\NearestNeighbor\Factory\VectorFactoryInterface;
 
 /**
  * Class Vector
@@ -26,4 +27,10 @@ interface VectorInterface
      * @return int[]
      */
     public function getData(): array;
+
+    /**
+     * @param VectorInterface $vector
+     * @return float
+     */
+    public function calculateDistanceTo(VectorInterface $vector): float;
 }
