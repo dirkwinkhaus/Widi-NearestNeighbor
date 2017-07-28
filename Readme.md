@@ -24,3 +24,17 @@
     // with factory
     $factory = new VectorFactory();
     $vector = $factory->create(1,2,3);
+    
+    // find nearest neighbor
+    $vectorA = new Vector(0,0);
+    $vectorB = new Vector(1,1);
+    $vectorC = new Vector(2,2);
+
+    $collection = new VectorCollection(
+        $vectorA,
+        $vectorB,
+        $vectorC
+    );
+    
+    // this will return the instance of $vectorA
+    $collection->findClosest(new Vector(0.1,0.1));

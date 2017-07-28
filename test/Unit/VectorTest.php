@@ -5,6 +5,7 @@ namespace Widi\NearestNeighbor;
 use PHPUnit_Framework_TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\MethodProphecy;
+use Widi\NearestNeighbor\Exception\VectorNotCompatibleException;
 use Widi\NearestNeighbor\Factory\VectorFactoryInterface;
 
 /**
@@ -22,7 +23,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
      * @param $expectedCount
      * @param array ...$dimensions
      */
-    public function itShouldGetDimensions($expectedCount, ...$dimensions)
+    public function itShouldGetDimensions($expectedCount, ...$dimensions): void
     {
         $vector = new Vector(...$dimensions);
 
@@ -33,7 +34,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function getVectorDimensions()
+    public function getVectorDimensions(): array
     {
         return [
             [0],
@@ -51,7 +52,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
      * @param array $vectorDataB
      * @param bool $shouldBeCompatible
      */
-    public function itShouldBeCompatible(array $vectorDataA, array $vectorDataB, bool $shouldBeCompatible)
+    public function itShouldBeCompatible(array $vectorDataA, array $vectorDataB, bool $shouldBeCompatible): void
     {
         $vectorA = new Vector(...$vectorDataA);
         $vectorB = new Vector(...$vectorDataB);
@@ -62,7 +63,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function getVectorCompatibles()
+    public function getVectorCompatibles(): array
     {
         return [
             [[], [], true],
@@ -81,7 +82,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
      * @param array $vectorBData
      * @param float $expectedDistance
      */
-    public function itShouldCalculateTheDistance(array $vectorAData, array $vectorBData, float $expectedDistance)
+    public function itShouldCalculateTheDistance(array $vectorAData, array $vectorBData, float $expectedDistance): void
     {
         $vectorA = new Vector(...$vectorAData);
         $vectorB = new Vector(...$vectorBData);
@@ -93,7 +94,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function getVectorDistanceData()
+    public function getVectorDistanceData(): array
     {
         return [
             [[7, 4, 3], [17, 6, 2], 10.25],
@@ -105,7 +106,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldUseTheFactory()
+    public function itShouldUseTheFactory(): void
     {
         $factoryMock = $this->prophesize(VectorFactoryInterface::class);
         /** @var MethodProphecy $method */
@@ -119,5 +120,17 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $distance = $vectorA->calculateDistanceTo($vectorB);
 
         $this->assertEquals(7.0710678118655, $distance);
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldThrowExceptionCausedByNonCompatibleVectors(): void
+    {
+        $vectorA = new Vector(1, 2);
+        $vectorB = new Vector(1, 2, 3);
+
+        $this->expectException(VectorNotCompatibleException::class);
+        $vectorA->calculateDistanceTo($vectorB);
     }
 }

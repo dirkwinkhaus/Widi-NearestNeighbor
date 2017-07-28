@@ -16,7 +16,7 @@ class VectorFactoryTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldCreateAVector()
+    public function itShouldCreateAVector(): void
     {
         $testData = [2,2.4];
         $factory = new VectorFactory();

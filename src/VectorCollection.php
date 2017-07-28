@@ -26,7 +26,9 @@ class VectorCollection implements VectorCollectionInterface
      */
     public function __construct(VectorInterface ...$vectors)
     {
-        $this->vectors = $vectors;
+        foreach($vectors as $vector) {
+            $this->addVector($vector);
+        }
     }
 
     /**
